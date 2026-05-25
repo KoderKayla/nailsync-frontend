@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
+// Dynamic API URL definition: Checks Render configuration first, falls back to localhost for local dev
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+
 const Login = ({ setToken }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -16,8 +19,8 @@ const Login = ({ setToken }) => {
     setError('');
 
     try {
-      // 2. Make the explicit POST call to get our JWT tokens
-      const response = await axios.post('http://localhost:8000/api/token/', {
+      // 2. Make the dynamic POST call using our API_URL variable
+      const response = await axios.post(`${API_URL}/api/token/`, {
         username: username,
         password: password,
       });
@@ -28,7 +31,7 @@ const Login = ({ setToken }) => {
       // Save token globally in app state
       setToken(accessToken);
       
-      // 🔑 NEW: Persist the token to browser storage instantly to eliminate async route delay
+      // 🔑 Persist the token to browser storage instantly to eliminate async route delay
       localStorage.setItem('nailsync_token', accessToken);
       
       // Send tech directly to their dashboard workspace
@@ -45,7 +48,7 @@ const Login = ({ setToken }) => {
         setError('❌ Request error. Please check your console.');
       }
     } finally {
-      setLoading(false);
+      loading && setLoading(false);
     }
   };
 

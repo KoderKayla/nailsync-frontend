@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
+// Dynamic API URL definition: Checks Render configuration first, falls back to localhost for local dev
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+
 const FormulaForm = ({ token: propToken }) => {
   // 🔑 Force active token tracking directly into local state
   const [authToken, setAuthToken] = useState(() => {
@@ -73,7 +76,8 @@ const FormulaForm = ({ token: propToken }) => {
 
     try {
       console.log('Sending secure payload to server...');
-      const response = await axios.post('http://localhost:8000/api/appointments/', payload, {
+      // 🔑 Updated to leverage dynamic routing environment variable
+      const response = await axios.post(`${API_URL}/api/appointments/`, payload, {
         headers: { 
           'Authorization': `Bearer ${authToken}`,
           'Content-Type': 'application/json'
@@ -113,7 +117,7 @@ const FormulaForm = ({ token: propToken }) => {
 
   return (
     <div style={styles.container}>
-      {/* 🛑 THE ULTIMATE GUARD: Warns immediately if local storage keys are missing */}
+      {/* 🛑 THE ULTIMALTE GUARD: Warns immediately if local storage keys are missing */}
       {!authToken && (
         <div style={{...styles.alert, backgroundColor: '#fffbeb', color: '#b45309', borderColor: '#fde68a'}}>
           ⚠️ WARNING: Session token not inherited by workspace view. Submissions will fail.
