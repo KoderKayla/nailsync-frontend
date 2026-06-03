@@ -109,6 +109,8 @@ SIMPLE_JWT = {
 AUTH_USER_MODEL = 'core.User'
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
+    "https://nailsync-frontend.onrender.com",
     "http://127.0.0.1:3000",
 ]
+
+CORS_ALLOW_CREDENTIALS = True
