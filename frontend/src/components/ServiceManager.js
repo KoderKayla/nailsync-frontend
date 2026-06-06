@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 
 const ServiceManager = () => {
+    // 1. Point this directly to your live Render backend URL
+    const API_BASE_URL = "https://nailsync-backend.onrender.com";
+
     const [services, setServices] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -14,8 +17,7 @@ const ServiceManager = () => {
 
     // Dynamic, decoupled helper for operations outside the mount lifecycle
     const getAuthHeaders = () => {
-        // ✅ FIXED: Changed 'token' to 'nailsync_token' to match your Dashboard's auth configuration
-        const token = localStorage.getItem('nailsync_token'); 
+        const token = localStorage.getItem('nailsync_token');
         return {
             'Content-Type': 'application/json',
             'Authorization': token ? `Bearer ${token}` : '',
@@ -29,7 +31,8 @@ const ServiceManager = () => {
                 setLoading(true);
                 const token = localStorage.getItem('nailsync_token');
                 
-                const response = await fetch('/api/services/', {
+                // ✅ UPDATED: Added API_BASE_URL prefix
+                const response = await fetch(`${API_BASE_URL}/api/services/`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -52,7 +55,7 @@ const ServiceManager = () => {
         };
 
         fetchServices();
-    }, []); // Empty dependency array is now completely safe and compliant
+    }, []);
 
     // Handle form submission for a new service
     const handleSubmit = async (e) => {
@@ -61,7 +64,8 @@ const ServiceManager = () => {
 
         setIsSubmitting(true);
         try {
-            const response = await fetch('/api/services/', {
+            // ✅ UPDATED: Added API_BASE_URL prefix
+            const response = await fetch(`${API_BASE_URL}/api/services/`, {
                 method: 'POST',
                 headers: getAuthHeaders(),
                 body: JSON.stringify({
@@ -78,7 +82,6 @@ const ServiceManager = () => {
 
             const newService = await response.json();
             
-            // Optimistic / Functional layout state update to avoid an extra network round-trip
             setServices((prevServices) => [...prevServices, newService]);
 
             // Reset Form fields on success
@@ -98,7 +101,8 @@ const ServiceManager = () => {
         if (!window.confirm('Are you sure you want to remove this service from your menu?')) return;
 
         try {
-            const response = await fetch(`/api/services/${id}/`, {
+            // ✅ UPDATED: Added API_BASE_URL prefix
+            const response = await fetch(`${API_BASE_URL}/api/services/${id}/`, {
                 method: 'DELETE',
                 headers: getAuthHeaders(),
             });
@@ -185,16 +189,16 @@ const ServiceManager = () => {
                 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                     {services.map((service) => (
-                        <div 
-                            key={service.id} 
-                            style={{ 
-                                display: 'flex', 
-                                justifyContent: 'space-between', 
-                                alignItems: 'center', 
-                                padding: '12px 16px', 
-                                background: '#fff', 
-                                border: '1px solid #ddd', 
-                                borderRadius: '6px' 
+                        <div
+                            key={service.id}
+                            style={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                alignItems: 'center',
+                                padding: '12px 16px',
+                                background: '#fff',
+                                border: '1px solid #ddd',
+                                borderRadius: '6px'
                             }}
                         >
                             <div>
