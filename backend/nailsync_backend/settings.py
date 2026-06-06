@@ -129,4 +129,4 @@ CORS_ALLOW_HEADERS = [
 ]
 
 # 4. Enforce trailing slash alignment for common routing engines
-APPEND_SLASH = True
+APPEND_SLASH = False
